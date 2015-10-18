@@ -1,0 +1,102 @@
+
+version = '0.1.0-SNAPSHOT'
+group = 'com.boazj.gradle'
+description = 'Adds log viewing task for local and remote logs'
+
+apply plugin: 'groovy'
+apply plugin: 'maven'
+apply plugin: 'jacoco'
+apply plugin: 'com.github.kt3k.coveralls'
+apply plugin: 'com.jfrog.bintray'
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.4.0'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.3.1'
+    }
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile gradleApi()
+    compile localGroovy()
+    compile 'com.boazj.gradle:gradle-utils:0.1.0'
+    compile 'commons-io:commons-io:2.4'
+    testCompile 'com.netflix.nebula:nebula-test:3.0.0'
+}
+
+sourceSets {
+    main {
+        compileClasspath = configurations.compile.minus files("$gradle.gradleHomeDir/lib/commons-io-1.4.jar")
+    }
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.6'
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
+
+task release {
+    if (project.hasProperty('bintrayUser')) {
+        bintray.user = project.property('bintrayUser')
+        bintray.key = project.property('bintrayKey')
+    }
+    def tag = (System.env.TRAVIS_TAG) as String
+    if (tag != null && !tag.empty) {
+        println "Found git tag ${tag}, setting as release version"
+        project.version = tag
+    }
+
+    finalizedBy bintrayUpload
+}
+
+bintray {
+    configurations = ['archives']
+    dryRun = false
+    publish = true
+    pkg {
+        repo = 'gradle-plugins'
+        name = project.name
+        desc = project.description
+        websiteUrl = "https://github.com/boazj/${project.name}"
+        issueTrackerUrl = "https://github.com/boazj/${project.name}/issues"
+        vcsUrl = "https://github.com/boazj/${project.name}.git"
+        licenses = ['Apache-2.0']
+        labels = ['gradle', 'boazj']
+        publicDownloadNumbers = true
+        attributes = [:]
+        version {
+            name = project.version
+            vcsTag = project.version
+            attributes = [:]
+        }
+    }
+}

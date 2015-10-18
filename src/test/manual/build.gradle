@@ -1,0 +1,17 @@
+apply plugin: 'com.boazj.log'
+
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.boazj.gradle:gradle-log-plugin:0.1.0-SNAPSHOT'
+    }
+}
+
+log {
+    logs = files('/home/boaz/.bash_history', '/home/boaz/.IntelliJIdea14/system/log/idea.log')
+    showHeaders = true
+    showOnlyNewLines = false
+}
