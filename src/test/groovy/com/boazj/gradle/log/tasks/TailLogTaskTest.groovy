@@ -16,12 +16,19 @@ class TailLogTaskTest {
     public final TemporaryFolder testProjectDir = new TemporaryFolder()
 
     @Test(expected = TaskExecutionException.class)
-    public void testNoLogs(){
+    public void testNullLogs(){
         Project project = ProjectBuilder.builder().build()
         TailLogTask task = project.task('tail', type: TailLogTask)
         task.execute()
     }
 
+    @Test(expected = TaskExecutionException.class)
+    public void testEmptyLogs(){
+        Project project = ProjectBuilder.builder().build()
+        TailLogTask task = project.task('tail', type: TailLogTask)
+        task.log = project.files()
+        task.execute()
+    }
 
     @Test
     public void testSingleLogFileTailLogTask(){
