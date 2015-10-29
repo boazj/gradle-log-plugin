@@ -10,8 +10,7 @@ buildscript {
     }
 }
 
-log {
-    logs = files('/home/boaz/.bash_history', '/home/boaz/.IntelliJIdea14/system/log/idea.log')
-    showHeaders = true
-    showOnlyNewLines = false
+tail {
+    log = files('/home/boaz/.bash_history', '/home/boaz/.IntelliJIdea14/system/log/idea.log')
+    showOnlyNewLines = true
 }

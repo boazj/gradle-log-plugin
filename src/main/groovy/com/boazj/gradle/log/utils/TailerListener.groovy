@@ -1,4 +1,4 @@
-package com.boazj.gradle.log
+package com.boazj.gradle.log.utils
 
 import com.boazj.gradle.utils.Color
 import com.boazj.gradle.utils.Output
@@ -13,22 +13,18 @@ class TailerListener extends TailerListenerAdapter {
     private Project project;
     private Color color;
 
-    TailerListener(Project project, File f, boolean showHeader = false, Color color = Color.White) {
-        this(null, project, f, showHeader, color);
-    }
-
-    TailerListener(OutputListener listener, Project project, File f, boolean showHeader = false, Color color = Color.White) {
+    TailerListener(Output output, String header, boolean showHeader = false, Color color = Color.White) {
         this.project = project;
         this.color = color;
-        output = OutputFactory.create(listener, project, "Tailer-${f.getName()}")
+        this.output = output
         if (showHeader) {
-            header = "[${f.getName()}] ";
+            this.header = "[${header}] ";
         }
     }
 
     @Override
     void handle(String line) {
-        synchronized (project) {
+        synchronized (output) {
             output.say(header, color)
             output.sayln(line)
         }

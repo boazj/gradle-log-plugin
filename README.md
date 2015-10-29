@@ -8,7 +8,6 @@ The plugin that will tail your log files as a gradle task.
 
 ## Usage
 
-
 To build the project execute the following command from the clone directory
 ```shell
 ./gradlew clean build install
@@ -38,7 +37,7 @@ tail {
 Configuration samples:
 ```gradle
 tail {
-	log = file('/var/log/somelog.log')
+	log = files('/var/log/somelog.log')
 }
 ```
 
@@ -50,14 +49,14 @@ tail {
 
 To add your custom tail tasks just create a task of type 'TailLogTask'
 ```gradle
-task other_tail(type: com.boazj.gradle.log.TailLogTask)
+task other_tail(type: com.boazj.gradle.log.tasks.TailLogTask)
 ```
+
+To exit the ever-running tail task enter one of 'exit', 'q', 'quit' followed by a new line
 
 Property               	   | Description                                            										          | Default Value
 -------------          	   | -------------                                          										          | -------------
-_File_ log 				   | A single log file to tail                            										              | null
-_FileCollection_ logs      | A collection of log files to tail in a single stream                                                     | null
-_Boolean_ showHeaders      | If the tail should show the log filename on each entry    										          | null
+_FileCollection_ log      | A collection of log files to tail in a single stream                                                     | null
 _boolean_ showOnlyNewLines | If the tail should only show new lines or the entire file 										          | true
 _boolean_ showColors       | If the tal should show headers in color (either white, red, yellow or green) when showing multiple logs  | true
 
