@@ -45,16 +45,8 @@ class Tailers {
         threads.each { it.interrupt(); }
     }
 
-    int getDelay() {
-        return delay
-    }
-
     void setDelay(int delay) {
         this.delay = delay
-    }
-
-    OutputListener getListener() {
-        return listener
     }
 
     void setListener(OutputListener listener) {
