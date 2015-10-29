@@ -62,7 +62,6 @@ _boolean_ showColors       | If the tal should show headers in color (either whi
 
 
 ## Road Map
-- [ ] Add tests
-- [ ] Add additional log related tasks - delete, roll, create etc.
-- [ ] Add support for remote logs
+- [x] Add tests
+- [ ] Add additional log related tasks - delete, roll, create, less etc.
 - [ ] Publish to bintray and plugin portal
