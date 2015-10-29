@@ -26,7 +26,7 @@ class TailersTest {
         FileCollection logs = project.files(log)
         Tailers tailers = new Tailers(logs, true, true, project)
         tailers.listener = outputListener
-        tailers.delay = DELAY;
+        tailers.delay = DELAY
         tailers.start()
         write(log, 'test string')
         Thread.sleep(DELAY * 10)
@@ -35,14 +35,14 @@ class TailersTest {
     }
 
     private void write(File file, String... lines) throws Exception {
-        FileWriter writer = null;
+        FileWriter writer = null
         try {
-            writer = new FileWriter(file, true);
+            writer = new FileWriter(file, true)
             for (String line : lines) {
-                writer.write(line + "\n");
+                writer.write(line + "\n")
             }
         } finally {
-            IOUtils.closeQuietly(writer);
+            IOUtils.closeQuietly(writer)
         }
     }
 

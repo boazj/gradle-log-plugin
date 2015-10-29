@@ -1,34 +1,51 @@
 package com.boazj.gradle.log.tasks
 
-import com.boazj.gradle.log.tasks.TailLogTask
 import com.boazj.gradle.utils.AccumulatingOutputListener
 import com.boazj.gradle.utils.OutputListener
 import org.gradle.api.Project
+import org.gradle.api.file.FileCollection
+import org.gradle.api.tasks.TaskExecutionException
 import org.gradle.testfixtures.ProjectBuilder
+import org.junit.Assert
 import org.junit.Rule
+import org.junit.Test
 import org.junit.rules.TemporaryFolder
-import spock.lang.Specification
 
-class TailLogTaskTest extends Specification {
+class TailLogTaskTest {
+    @Rule
+    public final TemporaryFolder testProjectDir = new TemporaryFolder()
+
+    @Test(expected = TaskExecutionException.class)
+    public void testNoLogs(){
+        Project project = ProjectBuilder.builder().build()
+        TailLogTask task = project.task('tail', type: TailLogTask)
+        task.execute()
+    }
 
 
-//    def 'test single log file'() {
-//        given:
-//            Project project = ProjectBuilder.builder().build()
-//            def TailLogTask task = project.task('tail', type: TailLogTask);
-//            def OutputListener listener = new AccumulatingOutputListener();
-//            def File log = file('tmp.test.log');
-//            task.listener = listener;
-//            task.standardInput = new
-//            Thread t = Thread.start {
-//                task.execute();
-//            }
-//        when:
-//
-//        then:
-//            listener.contains('Checking Gradle version ... ')
-//        then:
-//            noExceptionThrown()
-//    }
+    @Test
+    public void testSingleLogFileTailLogTask(){
+        Project project = ProjectBuilder.builder().build()
+        TailLogTask task = project.task('tail', type: TailLogTask)
+        OutputListener listener = new AccumulatingOutputListener()
+        File logFile = testProjectDir.newFile('logFile.logFile')
+        FileCollection log = project.files(logFile);
 
+        task.listener = listener
+        task.log = log
+        task.showOnlyNewLines = true
+        task.showColors = false
+
+        InputStream systemIn = System.in
+        ByteArrayInputStream input = new ByteArrayInputStream('exit'.getBytes())
+        System.setIn(input)
+
+        task.execute()
+
+        System.setIn(systemIn)
+
+        //If we haven't reached here then we're stuck!
+        //We don't really care about the tailed output as it's tested in a different test
+        Assert.assertTrue(true)
+    }
 }
